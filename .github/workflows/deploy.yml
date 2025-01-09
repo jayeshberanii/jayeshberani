@@ -1,0 +1,39 @@
+name: Deploy Vite Project to Vercel
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to your default branch if different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Step 2: Setup Node.js (Adjust the version as needed)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16 # Ensure compatibility with Vite
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Step 4: Build the Vite project
+      - name: Build Project
+        run: npm run build
+
+      # Step 5: Deploy to Vercel
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required Vercel token
+          github-token: ${{ secrets.GIT_TOKEN }} # Optional GitHub token
+          vercel-args: '--prod'                     # Deploy to production
+          vercel-project-id: ${{ secrets.PROJECT_ID }} # Required project ID
+          working-directory: ./ # Adjust if your Vite project is in a subdirectory
